@@ -1,0 +1,58 @@
+import { GameplayAsset } from "../types/project";
+
+export const mockAssets: GameplayAsset[] = [
+  {
+    id: "asset-rocket",
+    name: "Skyline Rush Loop",
+    duration: "12:45",
+    category: "High Motion",
+    game: "Rocket League",
+    thumbnailLabel: "RL",
+    resolution: "1080p / 60fps",
+  },
+  {
+    id: "asset-subway",
+    name: "Neon Escape Run",
+    duration: "08:30",
+    category: "Arcade",
+    game: "Subway Surfers",
+    thumbnailLabel: "SS",
+    resolution: "1080p / 60fps",
+  },
+  {
+    id: "asset-minecraft",
+    name: "Parkour Cliff Route",
+    duration: "15:10",
+    category: "Precision",
+    game: "Minecraft",
+    thumbnailLabel: "MC",
+    resolution: "1440p / 60fps",
+  },
+  {
+    id: "asset-gta",
+    name: "Downtown Night Drive",
+    duration: "10:22",
+    category: "Open World",
+    game: "GTA V",
+    thumbnailLabel: "GT",
+    resolution: "4K / 30fps",
+  },
+  {
+    id: "asset-fortnite",
+    name: "Zero Build Highlights",
+    duration: "09:54",
+    category: "Action",
+    game: "Fortnite",
+    thumbnailLabel: "FN",
+    resolution: "1080p / 60fps",
+  },
+  {
+    id: "asset-trackmania",
+    name: "Speed Circuit Sprint",
+    duration: "06:40",
+    category: "Racing",
+    game: "Trackmania",
+    thumbnailLabel: "TM",
+    resolution: "1440p / 120fps",
+  },
+];
