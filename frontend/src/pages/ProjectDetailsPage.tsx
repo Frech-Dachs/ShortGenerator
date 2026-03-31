@@ -23,7 +23,7 @@ export function ProjectDetailsPage() {
       <div className="panel flex min-h-[420px] flex-col items-center justify-center px-6 text-center">
         <h1 className="font-display text-3xl font-semibold text-white">Project not found</h1>
         <p className="mt-3 max-w-md text-sm leading-6 text-white/55">
-          This route expects a mock project id from the in-memory frontend state.
+          This project was not returned by the current API-loaded project list.
         </p>
         <Link to="/projects" className="mt-6">
           <Button>Back to Projects</Button>
@@ -32,7 +32,7 @@ export function ProjectDetailsPage() {
     );
   }
 
-  const asset = assets.find((item) => item.id === project.selectedAssetId);
+  const asset = assets.find((item) => item.assetId === project.assetId);
 
   return (
     <div className="space-y-8">
@@ -49,17 +49,16 @@ export function ProjectDetailsPage() {
             <h3 className="font-display text-xl font-semibold text-white">Project info</h3>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <InfoItem label="Topic" value={project.topic} />
-              <InfoItem label="Created" value={project.createdAt} />
-              <InfoItem label="Platform" value={project.platform} />
-              <InfoItem label="Duration" value={project.duration} />
-              <InfoItem label="Tone" value={project.tone} />
+              <InfoItem label="Project ID" value={project.id} />
+              <InfoItem label="Asset ID" value={project.assetId} />
+              <InfoItem label="Status" value={project.status} />
               <InfoItem label="Progress" value={`${project.progress}%`} />
             </div>
           </div>
 
           <div className="panel p-6">
-            <h3 className="font-display text-xl font-semibold text-white">Script / topic summary</h3>
-            <p className="mt-4 text-sm leading-7 text-white/70">{project.scriptSummary}</p>
+            <h3 className="font-display text-xl font-semibold text-white">Script</h3>
+            <p className="mt-4 text-sm leading-7 text-white/70">{project.script || "No generated script returned yet."}</p>
           </div>
 
           <div className="panel p-6">
@@ -90,18 +89,18 @@ export function ProjectDetailsPage() {
             <div className="mt-5 rounded-3xl border border-white/10 bg-white/[0.04] p-5">
               <div className="mb-4 flex items-center gap-4">
                 <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 font-display text-lg font-semibold">
-                  {asset?.thumbnailLabel ?? "NA"}
+                  {asset ? asset.assetId.slice(0, 2).toUpperCase() : "NA"}
                 </div>
                 <div>
-                  <p className="font-medium text-white">{asset?.name ?? "Unknown asset"}</p>
-                  <p className="text-sm text-white/55">{asset?.game ?? "No game mapped"}</p>
+                  <p className="font-medium text-white">{asset?.title ?? "Unknown asset"}</p>
+                  <p className="text-sm text-white/55">{asset?.assetId ?? "No asset mapped"}</p>
                 </div>
               </div>
               <div className="grid gap-3 text-sm text-white/65">
-                <InfoItem label="Category" value={asset?.category ?? "N/A"} compact />
-                <InfoItem label="Duration" value={asset?.duration ?? "N/A"} compact />
-                <InfoItem label="Resolution" value={asset?.resolution ?? "N/A"} compact />
-                <InfoItem label="Source" value="Future local gameplay folder integration" compact />
+                <InfoItem label="Asset ID" value={asset?.assetId ?? "N/A"} compact />
+                <InfoItem label="Title" value={asset?.title ?? "N/A"} compact />
+                <InfoItem label="Path" value={asset?.assetPath ?? "N/A"} compact />
+                <InfoItem label="Source" value="Backend asset model" compact />
               </div>
             </div>
           </div>
@@ -109,9 +108,9 @@ export function ProjectDetailsPage() {
           <div className="panel p-6">
             <h3 className="font-display text-xl font-semibold text-white">Pipeline statuses</h3>
             <div className="mt-5 space-y-4">
-              <StatusRow label="Voiceover" value={project.voiceoverStatus} />
-              <StatusRow label="Subtitles" value={project.subtitleStatus} />
-              <StatusRow label="Render / export" value={project.renderStatus} />
+              <StatusRow label="Generation status" value={project.status} />
+              <StatusRow label="Progress" value={`${project.progress}%`} />
+              <StatusRow label="Output file" value={project.outputFile || "Pending"} />
             </div>
           </div>
         </div>

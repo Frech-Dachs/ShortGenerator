@@ -16,7 +16,7 @@ services:
       - app-network
 
   backend:
-    profiles: ["backend"]
+    # profiles: ["backend"]
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -31,6 +31,27 @@ services:
     networks:
       - app-network
 
+  database:
+    profiles: ["database"]
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: shortgenerator-database
+    ports:
+      - "5432:5432"
+    volumes:
+      - database-data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+      - ./database/backups:/backups
+    env_file:
+      - ./database/env/postgres.env
+    restart: unless-stopped
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  database-data:

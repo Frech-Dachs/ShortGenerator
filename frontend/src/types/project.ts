@@ -1,15 +1,13 @@
-export type ProjectStatus = "draft" | "rendering" | "complete";
-export type Platform = "TikTok" | "YouTube Shorts" | "Instagram Reels";
-export type StoryTone = "Cinematic" | "High Energy" | "Dark Humor" | "Motivational";
+export enum ProjectStatus {
+  Draft = "draft",
+  Rendering = "rendering",
+  Complete = "complete",
+}
 
 export interface GameplayAsset {
-  id: string;
-  name: string;
-  duration: string;
-  category: string;
-  game: string;
-  thumbnailLabel: string;
-  resolution: string;
+  title: string;
+  assetId: string;
+  assetPath: string;
 }
 
 export interface VideoProject {
@@ -18,16 +16,10 @@ export interface VideoProject {
   topic: string;
   description: string;
   status: ProjectStatus;
-  createdAt: string;
-  selectedAssetId: string;
-  platform: Platform;
-  tone: StoryTone;
-  duration: string;
+  assetId: string;
   progress: number;
-  scriptSummary: string;
-  voiceoverStatus: string;
-  subtitleStatus: string;
-  renderStatus: string;
+  script: string;
+  outputFile: string;
 }
 
 export interface DashboardMetric {
@@ -37,9 +29,8 @@ export interface DashboardMetric {
 }
 
 export interface NewProjectFormValues {
+  title: string;
   topic: string;
-  tone: StoryTone;
-  platform: Platform;
-  duration: string;
-  selectedAssetId: string;
+  assetId: string;
+  description: string;
 }

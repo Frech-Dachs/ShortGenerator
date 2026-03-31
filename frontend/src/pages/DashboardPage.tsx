@@ -5,12 +5,26 @@ import { Button } from "../components/Button";
 import { ProjectCard } from "../components/ProjectCard";
 import { SectionHeader } from "../components/SectionHeader";
 import { StatCard } from "../components/StatCard";
-import { dashboardMetrics } from "../data/mockProjects";
+import { ProjectStatus } from "../types/project";
 import { useAppState } from "../hooks/useAppState";
 
 export function DashboardPage() {
-  const { assets, projects, duplicateProject, deleteProject } = useAppState();
+  const { assets, projects, isLoading, error } = useAppState();
   const openCreateModal = () => window.dispatchEvent(new Event("open-new-video-modal"));
+  const dashboardMetrics = [
+    { label: "Total Videos", value: String(projects.length), change: "Loaded from API" },
+    {
+      label: "Rendering",
+      value: String(projects.filter((project) => project.status === ProjectStatus.Rendering).length),
+      change: "Backend-owned state",
+    },
+    {
+      label: "Completed",
+      value: String(projects.filter((project) => project.status === ProjectStatus.Complete).length),
+      change: "Backend-owned state",
+    },
+    { label: "Gameplay Assets", value: String(assets.length), change: "Loaded from asset endpoint" },
+  ];
 
   return (
     <div className="space-y-10">
@@ -23,7 +37,7 @@ export function DashboardPage() {
               Build polished short-form video projects with a frontend that already feels like a real product.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-white/65">
-              Design-first workspace for mock video generation flows, gameplay background selection, and creator-ready project tracking. Backend and file integration can plug in later without reworking the UI foundation.
+              Design-first workspace for project creation, backend-driven generation, and creator-ready project tracking without relying on seeded frontend content.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button onClick={openCreateModal}>
@@ -51,14 +65,14 @@ export function DashboardPage() {
                 </div>
               </div>
               <p className="text-sm leading-6 text-white/60">
-                Use mocked status signals today, then swap in backend render jobs later.
+                This view now reads from API-loaded project state instead of seeded frontend data.
               </p>
             </div>
             <div className="panel-muted p-5">
-              <p className="text-sm text-white/55">Gameplay source</p>
-              <p className="mt-2 font-display text-xl font-semibold text-white">Local asset folder ready</p>
+              <p className="text-sm text-white/55">Backend contract</p>
+              <p className="mt-2 font-display text-xl font-semibold text-white">Create form posts only seed values</p>
               <p className="mt-3 text-sm leading-6 text-white/60">
-                Cards below are placeholders for real footage discovery from your manual asset library.
+                The backend is responsible for filling generated fields like script, progress, status, and output file.
               </p>
             </div>
           </div>
@@ -75,40 +89,52 @@ export function DashboardPage() {
         <SectionHeader
           eyebrow="Recent Work"
           title="Recent video projects"
-          description="Projects stay in local mock state for now, but the shape is designed to map directly to future persisted backend models."
+          description="These cards now reflect API-loaded project records rather than seeded frontend placeholders."
           action={
             <Link to="/projects">
               <Button variant="secondary">View All Projects</Button>
             </Link>
           }
         />
-        <div className="grid gap-5 xl:grid-cols-2">
-          {projects.slice(0, 4).map((project) => {
-            const assetName = assets.find((asset) => asset.id === project.selectedAssetId)?.name ?? "Unknown asset";
-            return (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                assetName={assetName}
-                onDuplicate={() => duplicateProject(project.id)}
-                onDelete={() => deleteProject(project.id)}
-              />
-            );
-          })}
-        </div>
+        {isLoading ? (
+          <div className="panel flex min-h-[240px] items-center justify-center text-sm text-white/55">
+            Loading projects...
+          </div>
+        ) : error ? (
+          <div className="panel flex min-h-[240px] items-center justify-center px-6 text-center text-sm text-rose-100">
+            {error}
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="panel flex min-h-[240px] items-center justify-center px-6 text-center text-sm text-white/55">
+            No projects yet. Use the create flow to send your first project request to the backend.
+          </div>
+        ) : (
+          <div className="grid gap-5 xl:grid-cols-2">
+            {projects.slice(0, 4).map((project) => {
+              const assetName = assets.find((asset) => asset.assetId === project.assetId)?.title ?? project.assetId;
+              return <ProjectCard key={project.id} project={project} assetName={assetName} />;
+            })}
+          </div>
+        )}
       </section>
 
       <section>
         <SectionHeader
           eyebrow="Gameplay Assets"
           title="Available gameplay footage"
-          description="These entries intentionally read like a real content library while staying frontend-only and mock-driven."
+          description="Asset cards are now driven by the backend contract. Until that endpoint is live, this section stays empty."
         />
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {assets.slice(0, 6).map((asset) => (
-            <AssetCard key={asset.id} asset={asset} />
-          ))}
-        </div>
+        {assets.length === 0 ? (
+          <div className="panel flex min-h-[220px] items-center justify-center px-6 text-center text-sm text-white/55">
+            No assets returned by the API yet.
+          </div>
+        ) : (
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {assets.map((asset) => (
+              <AssetCard key={asset.assetId} asset={asset} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

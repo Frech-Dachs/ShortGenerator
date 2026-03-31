@@ -1,20 +1,16 @@
-import { Clapperboard, Sparkles } from "lucide-react";
+import { FileText, Sparkles } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { useAppState } from "../hooks/useAppState";
-import { NewProjectFormValues, Platform, StoryTone } from "../types/project";
+import { NewProjectFormValues } from "../types/project";
 import { Button } from "./Button";
 import { InputField, SelectField, TextareaField } from "./FormField";
 import { Modal } from "./Modal";
 
-const platforms: Platform[] = ["TikTok", "YouTube Shorts", "Instagram Reels"];
-const tones: StoryTone[] = ["Cinematic", "High Energy", "Dark Humor", "Motivational"];
-
 const initialFormValues: NewProjectFormValues = {
+  title: "",
   topic: "",
-  tone: "Cinematic",
-  platform: "TikTok",
-  duration: "45 sec",
-  selectedAssetId: "asset-minecraft",
+  assetId: "",
+  description: "",
 };
 
 export function NewVideoModal({
@@ -26,19 +22,26 @@ export function NewVideoModal({
 }) {
   const { assets, createProject } = useAppState();
   const [values, setValues] = useState<NewProjectFormValues>(initialFormValues);
-  const [notes, setNotes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const updateValue = <K extends keyof NewProjectFormValues>(key: K, value: NewProjectFormValues[K]) => {
     setValues((current) => ({ ...current, [key]: value }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    createProject(values);
-    console.log("Mock form notes", notes);
-    setValues(initialFormValues);
-    setNotes("");
-    onClose();
+    try {
+      setIsSubmitting(true);
+      setSubmitError(null);
+      await createProject(values);
+      setValues(initialFormValues);
+      onClose();
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Failed to create project");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -46,75 +49,72 @@ export function NewVideoModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Create New Video Project"
-      description="Frontend-only for now. This modal uses mock state so the workflow can expand into API-backed creation later."
+      description="The form sends only the seed values. The backend can fill in generated fields like progress, script, output file, and final status."
     >
       <form className="space-y-8" onSubmit={handleSubmit}>
         <div className="grid gap-6 md:grid-cols-2">
+          <InputField
+            label="Title"
+            placeholder="Example: Why Tiny Habits Change Everything"
+            icon={<FileText className="h-4 w-4" />}
+            value={values.title}
+            onChange={(event) => updateValue("title", event.target.value)}
+            hint="This maps directly to the backend NewVideo model."
+          />
           <InputField
             label="Topic"
             placeholder="Example: Why tiny habits scale faster than motivation"
             icon={<Sparkles className="h-4 w-4" />}
             value={values.topic}
             onChange={(event) => updateValue("topic", event.target.value)}
-            hint="This becomes the seed idea for a future generated script."
+            hint="Use the underlying content idea you want the backend to generate from."
           />
-          <InputField
-            label="Desired Duration"
-            placeholder="45 sec"
-            icon={<Clapperboard className="h-4 w-4" />}
-            value={values.duration}
-            onChange={(event) => updateValue("duration", event.target.value)}
-            hint="Short-form pacing works best between 30 and 60 seconds."
-          />
-          <SelectField
-            label="Story Style / Tone"
-            value={values.tone}
-            onChange={(event) => updateValue("tone", event.target.value as StoryTone)}
-          >
-            {tones.map((tone) => (
-              <option key={tone} value={tone} className="bg-surface-900">
-                {tone}
-              </option>
-            ))}
-          </SelectField>
-          <SelectField
-            label="Target Platform"
-            value={values.platform}
-            onChange={(event) => updateValue("platform", event.target.value as Platform)}
-          >
-            {platforms.map((platform) => (
-              <option key={platform} value={platform} className="bg-surface-900">
-                {platform}
-              </option>
-            ))}
-          </SelectField>
         </div>
 
-        <SelectField
-          label="Gameplay Background Selection"
-          value={values.selectedAssetId}
-          hint="This is mocked today and ready to be connected to a local-folder or backend asset source later."
-          onChange={(event) => updateValue("selectedAssetId", event.target.value)}
-        >
-          {assets.map((asset) => (
-            <option key={asset.id} value={asset.id} className="bg-surface-900">
-              {asset.name} - {asset.game} - {asset.duration}
-            </option>
-          ))}
-        </SelectField>
-
-        <TextareaField
-          label="Project Notes"
-          placeholder="Add tone references, visual pacing hints, or opening-hook ideas..."
-          value={notes}
-          onChange={(event) => setNotes(event.target.value)}
-          hint="Kept as mock-only text for now."
+        <InputField
+          label="Asset ID"
+          placeholder="Example: gameplay-asset-001"
+          value={values.assetId}
+          onChange={(event) => updateValue("assetId", event.target.value)}
+          hint="If your backend exposes assets, use one of those IDs here."
         />
 
+        <TextareaField
+          label="Description"
+          placeholder="Short summary of what the video should cover..."
+          value={values.description}
+          onChange={(event) => updateValue("description", event.target.value)}
+          hint="This is sent to the backend and the remaining generated fields come back in the API response."
+        />
+
+        {assets.length > 0 ? (
+          <SelectField
+            label="Available Asset IDs"
+            value={values.assetId}
+            hint="Optional helper list from the backend asset endpoint."
+            onChange={(event) => updateValue("assetId", event.target.value)}
+          >
+            <option value="" className="bg-surface-900">
+              Select an available asset
+            </option>
+            {assets.map((asset) => (
+              <option key={asset.assetId} value={asset.assetId} className="bg-surface-900">
+                {asset.title} - {asset.assetId}
+              </option>
+            ))}
+          </SelectField>
+        ) : null}
+
+        {submitError ? (
+          <div className="rounded-2xl border border-rose-400/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
+            {submitError}
+          </div>
+        ) : null}
+
         <div className="flex flex-col gap-3 rounded-3xl border border-brand-500/20 bg-brand-500/10 p-4 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
-          <p>This creates a local mock project card immediately so the product flow feels real before backend wiring exists.</p>
-          <Button type="submit" className="min-w-[220px]">
-            Create Video Project
+          <p>On submit, we send `NewProjectFormValues` to the API and expect the backend to return a completed `VideoProject` shape.</p>
+          <Button type="submit" className="min-w-[220px]" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Create Video Project"}
           </Button>
         </div>
       </form>

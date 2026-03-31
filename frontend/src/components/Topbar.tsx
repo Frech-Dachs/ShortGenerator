@@ -15,7 +15,7 @@ export function Topbar({ onCreateClick }: TopbarProps) {
           </button>
           <div className="hidden items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/45 md:flex">
             <Search className="h-4 w-4" />
-            <span>Search projects, tones, assets...</span>
+            <span>Search projects and assets...</span>
           </div>
         </div>
 

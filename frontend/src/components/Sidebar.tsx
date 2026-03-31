@@ -39,7 +39,7 @@ export function Sidebar() {
       <div className="mt-auto panel-muted p-5">
         <p className="text-sm font-medium text-white">Local gameplay library</p>
         <p className="mt-2 text-sm leading-6 text-white/55">
-          Asset cards are mocked now, but this panel is structured to connect to your filesystem scan later.
+          Asset cards now expect real data from your backend asset endpoint or future filesystem integration.
         </p>
       </div>
     </aside>
