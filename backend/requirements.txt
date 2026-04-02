@@ -1,11 +1,9 @@
 fastapi
+pydantic
 uvicorn[standard]
-
-sqlalchemy>=2.0
-pydantic>=2.0
-
-python-multipart
-
-alembic
-
+sqlalchemy
+psycopg2-binary
+pwdlib[argon2]
 python-dotenv
+email-validator
+itsdangerous

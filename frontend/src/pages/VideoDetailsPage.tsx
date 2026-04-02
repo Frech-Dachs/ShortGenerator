@@ -13,52 +13,52 @@ const pipelineItems = [
   { label: "Export", icon: CheckCircle2 },
 ];
 
-export function ProjectDetailsPage() {
-  const { projectId } = useParams();
-  const { projects, assets } = useAppState();
-  const project = projects.find((item) => item.id === projectId);
+export function VideoDetailsPage() {
+  const { videoId } = useParams();
+  const { videos, assets } = useAppState();
+  const video = videos.find((item) => item.id === videoId);
 
-  if (!project) {
+  if (!video) {
     return (
       <div className="panel flex min-h-[420px] flex-col items-center justify-center px-6 text-center">
-        <h1 className="font-display text-3xl font-semibold text-white">Project not found</h1>
+        <h1 className="font-display text-3xl font-semibold text-white">Video not found</h1>
         <p className="mt-3 max-w-md text-sm leading-6 text-white/55">
-          This project was not returned by the current API-loaded project list.
+          This video was not returned by the current API-loaded video list.
         </p>
         <Link to="/projects" className="mt-6">
-          <Button>Back to Projects</Button>
+          <Button>Back to Videos</Button>
         </Link>
       </div>
     );
   }
 
-  const asset = assets.find((item) => item.assetId === project.assetId);
+  const asset = assets.find((item) => item.assetId === video.assetId);
 
   return (
     <div className="space-y-8">
       <SectionHeader
-        eyebrow="Project Details"
-        title={project.title}
-        description={project.description}
-        action={<StatusBadge status={project.status} />}
+        eyebrow="Video Details"
+        title={video.title}
+        description={video.description}
+        action={<StatusBadge status={video.status} />}
       />
 
       <section className="grid gap-6 xl:grid-cols-[1.2fr,0.8fr]">
         <div className="space-y-6">
           <div className="panel p-6">
-            <h3 className="font-display text-xl font-semibold text-white">Project info</h3>
+            <h3 className="font-display text-xl font-semibold text-white">Video info</h3>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <InfoItem label="Topic" value={project.topic} />
-              <InfoItem label="Project ID" value={project.id} />
-              <InfoItem label="Asset ID" value={project.assetId} />
-              <InfoItem label="Status" value={project.status} />
-              <InfoItem label="Progress" value={`${project.progress}%`} />
+              <InfoItem label="Topic" value={video.topic} />
+              <InfoItem label="Video ID" value={video.id} />
+              <InfoItem label="Asset ID" value={video.assetId} />
+              <InfoItem label="Status" value={video.status} />
+              <InfoItem label="Progress" value={`${video.progress}%`} />
             </div>
           </div>
 
           <div className="panel p-6">
             <h3 className="font-display text-xl font-semibold text-white">Script</h3>
-            <p className="mt-4 text-sm leading-7 text-white/70">{project.script || "No generated script returned yet."}</p>
+            <p className="mt-4 text-sm leading-7 text-white/70">{video.script || "No generated script returned yet."}</p>
           </div>
 
           <div className="panel p-6">
@@ -68,7 +68,7 @@ export function ProjectDetailsPage() {
                 <div
                   key={label}
                   className={`rounded-3xl border p-4 text-center transition ${
-                    project.progress >= (index + 1) * 20
+                    video.progress >= (index + 1) * 20
                       ? "border-brand-400/35 bg-brand-500/12 text-white"
                       : "border-white/10 bg-white/[0.03] text-white/50"
                   }`}
@@ -108,9 +108,9 @@ export function ProjectDetailsPage() {
           <div className="panel p-6">
             <h3 className="font-display text-xl font-semibold text-white">Pipeline statuses</h3>
             <div className="mt-5 space-y-4">
-              <StatusRow label="Generation status" value={project.status} />
-              <StatusRow label="Progress" value={`${project.progress}%`} />
-              <StatusRow label="Output file" value={project.outputFile || "Pending"} />
+              <StatusRow label="Generation status" value={video.status} />
+              <StatusRow label="Progress" value={`${video.progress}%`} />
+              <StatusRow label="Output file" value={video.outputFile || "Pending"} />
             </div>
           </div>
         </div>

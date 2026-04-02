@@ -1,13 +1,13 @@
 import clsx from "clsx";
-import { ProjectStatus } from "../types/project";
+import { VideoStatus } from "../types/video";
 
-const statusClasses: Record<ProjectStatus, string> = {
+const statusClasses: Record<VideoStatus, string> = {
   draft: "bg-white/[0.08] text-white/80 border-white/10",
   rendering: "bg-amber-400/10 text-amber-200 border-amber-300/20",
   complete: "bg-emerald-400/10 text-emerald-200 border-emerald-300/20",
 };
 
-export function StatusBadge({ status }: { status: ProjectStatus }) {
+export function StatusBadge({ status }: { status: VideoStatus }) {
   return (
     <span
       className={clsx(

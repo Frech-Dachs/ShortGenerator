@@ -1,12 +1,12 @@
 import { FileText, Sparkles } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { useAppState } from "../hooks/useAppState";
-import { NewProjectFormValues } from "../types/project";
+import { NewVideoFormValues } from "../types/video";
 import { Button } from "./Button";
 import { InputField, SelectField, TextareaField } from "./FormField";
 import { Modal } from "./Modal";
 
-const initialFormValues: NewProjectFormValues = {
+const initialFormValues: NewVideoFormValues = {
   title: "",
   topic: "",
   assetId: "",
@@ -20,12 +20,12 @@ export function NewVideoModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const { assets, createProject } = useAppState();
-  const [values, setValues] = useState<NewProjectFormValues>(initialFormValues);
+  const { assets, createVideo } = useAppState();
+  const [values, setValues] = useState<NewVideoFormValues>(initialFormValues);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const updateValue = <K extends keyof NewProjectFormValues>(key: K, value: NewProjectFormValues[K]) => {
+  const updateValue = <K extends keyof NewVideoFormValues>(key: K, value: NewVideoFormValues[K]) => {
     setValues((current) => ({ ...current, [key]: value }));
   };
 
@@ -34,11 +34,11 @@ export function NewVideoModal({
     try {
       setIsSubmitting(true);
       setSubmitError(null);
-      await createProject(values);
+      await createVideo(values);
       setValues(initialFormValues);
       onClose();
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Failed to create project");
+      setSubmitError(error instanceof Error ? error.message : "Failed to create video");
     } finally {
       setIsSubmitting(false);
     }
@@ -48,7 +48,7 @@ export function NewVideoModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Create New Video Project"
+      title="Create New Video"
       description="The form sends only the seed values. The backend can fill in generated fields like progress, script, output file, and final status."
     >
       <form className="space-y-8" onSubmit={handleSubmit}>
@@ -59,7 +59,7 @@ export function NewVideoModal({
             icon={<FileText className="h-4 w-4" />}
             value={values.title}
             onChange={(event) => updateValue("title", event.target.value)}
-            hint="This maps directly to the backend NewVideo model."
+            hint="This maps directly to the backend video model."
           />
           <InputField
             label="Topic"
@@ -112,9 +112,9 @@ export function NewVideoModal({
         ) : null}
 
         <div className="flex flex-col gap-3 rounded-3xl border border-brand-500/20 bg-brand-500/10 p-4 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
-          <p>On submit, we send `NewProjectFormValues` to the API and expect the backend to return a completed `VideoProject` shape.</p>
+          <p>On submit, we send `NewVideoFormValues` to the API and expect the backend to return a completed `VideoItem` shape.</p>
           <Button type="submit" className="min-w-[220px]" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Create Video Project"}
+            {isSubmitting ? "Submitting..." : "Create Video"}
           </Button>
         </div>
       </form>

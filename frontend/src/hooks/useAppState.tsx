@@ -7,25 +7,25 @@ import {
   useState,
 } from "react";
 import {
-  createProject as createProjectRequest,
+  createVideo as createVideoRequest,
   getAssets,
-  getProjects,
-} from "../data/projectsApi";
-import { GameplayAsset, NewProjectFormValues, VideoProject } from "../types/project";
+  getVideos,
+} from "../data/videosApi";
+import { GameplayAsset, NewVideoFormValues, VideoItem } from "../types/video";
 
 interface AppStateContextValue {
   assets: GameplayAsset[];
-  projects: VideoProject[];
+  videos: VideoItem[];
   isLoading: boolean;
   error: string | null;
-  createProject: (values: NewProjectFormValues) => Promise<VideoProject>;
+  createVideo: (values: NewVideoFormValues) => Promise<VideoItem>;
 }
 
 const AppStateContext = createContext<AppStateContextValue | undefined>(undefined);
 
 export function AppProvider({ children }: PropsWithChildren) {
   const [assets, setAssets] = useState<GameplayAsset[]>([]);
-  const [projects, setProjects] = useState<VideoProject[]>([]);
+  const [videos, setVideos] = useState<VideoItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,12 +35,12 @@ export function AppProvider({ children }: PropsWithChildren) {
         setIsLoading(true);
         setError(null);
 
-        const [loadedProjects, loadedAssets] = await Promise.all([
-          getProjects(),
+        const [loadedVideos, loadedAssets] = await Promise.all([
+          getVideos(),
           getAssets().catch(() => []),
         ]);
 
-        setProjects(loadedProjects);
+        setVideos(loadedVideos);
         setAssets(loadedAssets);
       } catch (loadError) {
         setError(loadError instanceof Error ? loadError.message : "Failed to load data");
@@ -52,21 +52,21 @@ export function AppProvider({ children }: PropsWithChildren) {
     void loadInitialData();
   }, []);
 
-  const createProject = async (values: NewProjectFormValues) => {
-    const nextProject = await createProjectRequest(values);
-    setProjects((current) => [nextProject, ...current]);
-    return nextProject;
+  const createVideo = async (values: NewVideoFormValues) => {
+    const nextVideo = await createVideoRequest(values);
+    setVideos((current) => [nextVideo, ...current]);
+    return nextVideo;
   };
 
   const value = useMemo(
     () => ({
       assets,
-      projects,
+      videos,
       isLoading,
       error,
-      createProject,
+      createVideo,
     }),
-    [assets, error, isLoading, projects],
+    [assets, error, isLoading, videos],
   );
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;

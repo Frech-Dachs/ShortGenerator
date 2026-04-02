@@ -16,23 +16,25 @@ services:
       - app-network
 
   backend:
-    # profiles: ["backend"]
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: shortgenerator-backend
     ports:
-      - "8000:8000"
+    - "8000:8000"
     volumes:
-      - ./backend:/app
+    - ./backend:/app
     environment:
       PYTHONUNBUFFERED: "1"
+    env_file:
+      - ./database/env/postgres.env
+    depends_on:
+      - database
     restart: unless-stopped
     networks:
       - app-network
 
   database:
-    profiles: ["database"]
     build:
       context: ./database
       dockerfile: Dockerfile

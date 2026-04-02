@@ -1,4 +1,4 @@
-from app.models.video import NewVideo, Video, VideoStatus
+from app.schemas.video import NewVideo, Video, VideoStatus
 from fastapi import APIRouter
 
 router = APIRouter(prefix="/videos", tags=["videos"])

@@ -1,4 +1,4 @@
-import { GameplayAsset, NewProjectFormValues, ProjectStatus, VideoProject } from "../types/project";
+import { GameplayAsset, NewVideoFormValues, VideoItem, VideoStatus } from "../types/video";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000";
 
@@ -7,7 +7,7 @@ interface VideoApiResponse {
   title: string;
   topic: string;
   description: string;
-  status: ProjectStatus;
+  status: VideoStatus;
   assetId: string;
   progress: number;
   script: string;
@@ -20,7 +20,7 @@ interface AssetApiResponse {
   assetPath: string;
 }
 
-function mapVideo(video: VideoApiResponse): VideoProject {
+function mapVideo(video: VideoApiResponse): VideoItem {
   return {
     id: video.id,
     title: video.title,
@@ -34,27 +34,27 @@ function mapVideo(video: VideoApiResponse): VideoProject {
   };
 }
 
-export async function getProjects(): Promise<VideoProject[]> {
+export async function getVideos(): Promise<VideoItem[]> {
   const response = await fetch(`${API_BASE_URL}/videos/`);
   if (!response.ok) {
-    throw new Error("Failed to load projects");
+    throw new Error("Failed to load videos");
   }
 
   const payload: VideoApiResponse[] = await response.json();
   return payload.map(mapVideo);
 }
 
-export async function getProject(projectId: string): Promise<VideoProject> {
-  const response = await fetch(`${API_BASE_URL}/videos/${projectId}`);
+export async function getVideo(videoId: string): Promise<VideoItem> {
+  const response = await fetch(`${API_BASE_URL}/videos/${videoId}`);
   if (!response.ok) {
-    throw new Error("Failed to load project");
+    throw new Error("Failed to load video");
   }
 
   const payload: VideoApiResponse = await response.json();
   return mapVideo(payload);
 }
 
-export async function createProject(values: NewProjectFormValues): Promise<VideoProject> {
+export async function createVideo(values: NewVideoFormValues): Promise<VideoItem> {
   const response = await fetch(`${API_BASE_URL}/videos/`, {
     method: "POST",
     headers: {
@@ -64,7 +64,7 @@ export async function createProject(values: NewProjectFormValues): Promise<Video
   });
 
   if (!response.ok) {
-    throw new Error("Failed to create project");
+    throw new Error("Failed to create video");
   }
 
   const payload: VideoApiResponse = await response.json();

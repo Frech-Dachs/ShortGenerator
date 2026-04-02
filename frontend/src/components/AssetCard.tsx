@@ -1,5 +1,5 @@
 import { FolderInput, PlayCircle } from "lucide-react";
-import { GameplayAsset } from "../types/project";
+import { GameplayAsset } from "../types/video";
 import { Button } from "./Button";
 
 export function AssetCard({ asset, compact = false }: { asset: GameplayAsset; compact?: boolean }) {

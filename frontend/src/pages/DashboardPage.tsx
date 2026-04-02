@@ -2,25 +2,25 @@ import { ArrowRight, Film, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AssetCard } from "../components/AssetCard";
 import { Button } from "../components/Button";
-import { ProjectCard } from "../components/ProjectCard";
+import { VideoCard } from "../components/VideoCard";
 import { SectionHeader } from "../components/SectionHeader";
 import { StatCard } from "../components/StatCard";
-import { ProjectStatus } from "../types/project";
+import { VideoStatus } from "../types/video";
 import { useAppState } from "../hooks/useAppState";
 
 export function DashboardPage() {
-  const { assets, projects, isLoading, error } = useAppState();
+  const { assets, videos, isLoading, error } = useAppState();
   const openCreateModal = () => window.dispatchEvent(new Event("open-new-video-modal"));
   const dashboardMetrics = [
-    { label: "Total Videos", value: String(projects.length), change: "Loaded from API" },
+    { label: "Total Videos", value: String(videos.length), change: "Loaded from API" },
     {
       label: "Rendering",
-      value: String(projects.filter((project) => project.status === ProjectStatus.Rendering).length),
+      value: String(videos.filter((video) => video.status === VideoStatus.Rendering).length),
       change: "Backend-owned state",
     },
     {
       label: "Completed",
-      value: String(projects.filter((project) => project.status === ProjectStatus.Complete).length),
+      value: String(videos.filter((video) => video.status === VideoStatus.Complete).length),
       change: "Backend-owned state",
     },
     { label: "Gameplay Assets", value: String(assets.length), change: "Loaded from asset endpoint" },
@@ -34,10 +34,10 @@ export function DashboardPage() {
           <div className="max-w-3xl">
             <p className="mb-4 text-xs uppercase tracking-[0.36em] text-brand-300">Creator Command Center</p>
             <h1 className="text-gradient font-display text-4xl font-semibold leading-tight sm:text-5xl">
-              Build polished short-form video projects with a frontend that already feels like a real product.
+              Build polished short-form videos with a frontend that already feels like a real product.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-white/65">
-              Design-first workspace for project creation, backend-driven generation, and creator-ready project tracking without relying on seeded frontend content.
+              Design-first workspace for video creation, backend-driven generation, and creator-ready video tracking without relying on seeded frontend content.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button onClick={openCreateModal}>
@@ -46,7 +46,7 @@ export function DashboardPage() {
               </Button>
               <Link to="/projects">
                 <Button variant="secondary">
-                  Explore Projects
+                  Explore Videos
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
@@ -65,7 +65,7 @@ export function DashboardPage() {
                 </div>
               </div>
               <p className="text-sm leading-6 text-white/60">
-                This view now reads from API-loaded project state instead of seeded frontend data.
+                This view now reads from API-loaded video state instead of seeded frontend data.
               </p>
             </div>
             <div className="panel-muted p-5">
@@ -88,31 +88,31 @@ export function DashboardPage() {
       <section>
         <SectionHeader
           eyebrow="Recent Work"
-          title="Recent video projects"
-          description="These cards now reflect API-loaded project records rather than seeded frontend placeholders."
+          title="Recent videos"
+          description="These cards now reflect API-loaded video records rather than seeded frontend placeholders."
           action={
             <Link to="/projects">
-              <Button variant="secondary">View All Projects</Button>
+              <Button variant="secondary">View All Videos</Button>
             </Link>
           }
         />
         {isLoading ? (
           <div className="panel flex min-h-[240px] items-center justify-center text-sm text-white/55">
-            Loading projects...
+            Loading videos...
           </div>
         ) : error ? (
           <div className="panel flex min-h-[240px] items-center justify-center px-6 text-center text-sm text-rose-100">
             {error}
           </div>
-        ) : projects.length === 0 ? (
+        ) : videos.length === 0 ? (
           <div className="panel flex min-h-[240px] items-center justify-center px-6 text-center text-sm text-white/55">
-            No projects yet. Use the create flow to send your first project request to the backend.
+            No videos yet. Use the create flow to send your first video request to the backend.
           </div>
         ) : (
           <div className="grid gap-5 xl:grid-cols-2">
-            {projects.slice(0, 4).map((project) => {
-              const assetName = assets.find((asset) => asset.assetId === project.assetId)?.title ?? project.assetId;
-              return <ProjectCard key={project.id} project={project} assetName={assetName} />;
+            {videos.slice(0, 4).map((video) => {
+              const assetName = assets.find((asset) => asset.assetId === video.assetId)?.title ?? video.assetId;
+              return <VideoCard key={video.id} video={video} assetName={assetName} />;
             })}
           </div>
         )}

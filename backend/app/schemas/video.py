@@ -5,6 +5,7 @@ class VideoStatus(str, Enum):
     draft = "draft"
     rendering = "rendering"
     complete = "complete"
+    failed = "failed"
 
 class NewVideo(BaseModel):
     title: str

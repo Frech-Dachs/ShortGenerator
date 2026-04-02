@@ -1,8 +1,8 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AppLayout } from "./layouts/AppLayout";
 import { DashboardPage } from "./pages/DashboardPage";
-import { ProjectDetailsPage } from "./pages/ProjectDetailsPage";
-import { ProjectsPage } from "./pages/ProjectsPage";
+import { VideoDetailsPage } from "./pages/VideoDetailsPage";
+import { VideosPage } from "./pages/VideosPage";
 import { AppProvider } from "./hooks/useAppState";
 
 export default function App() {
@@ -11,8 +11,8 @@ export default function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/projects/:projectId" element={<ProjectDetailsPage />} />
+          <Route path="/projects" element={<VideosPage />} />
+          <Route path="/projects/:videoId" element={<VideoDetailsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

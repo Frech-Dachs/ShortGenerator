@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
-import { DashboardMetric } from "../types/project";
+import { DashboardMetric } from "../types/video";
 
 export function StatCard({ label, value, change }: DashboardMetric) {
   return (

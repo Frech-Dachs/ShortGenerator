@@ -1,4 +1,4 @@
-export enum ProjectStatus {
+export enum VideoStatus {
   Draft = "draft",
   Rendering = "rendering",
   Complete = "complete",
@@ -10,12 +10,12 @@ export interface GameplayAsset {
   assetPath: string;
 }
 
-export interface VideoProject {
+export interface VideoItem {
   id: string;
   title: string;
   topic: string;
   description: string;
-  status: ProjectStatus;
+  status: VideoStatus;
   assetId: string;
   progress: number;
   script: string;
@@ -28,7 +28,7 @@ export interface DashboardMetric {
   change: string;
 }
 
-export interface NewProjectFormValues {
+export interface NewVideoFormValues {
   title: string;
   topic: string;
   assetId: string;
